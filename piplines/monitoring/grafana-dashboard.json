@@ -1,0 +1,63 @@
+{
+  "title": "E-Commerce API Dashboard",
+  "uid": "ecommerce-dashboard",
+  "timezone": "browser",
+  "panels": [
+    {
+      "id": 1,
+      "title": "Total API Requests",
+      "type": "stat",
+      "gridPos": { "x": 0, "y": 0, "w": 6, "h": 4 },
+      "targets": [
+        {
+          "expr": "sum(increase(products_requests_total[5m]) + increase(orders_requests_total[5m]) + increase(track_requests_total[5m]))",
+          "legendFormat": "Total Requests (5m)"
+        }
+      ]
+    },
+    {
+      "id": 2,
+      "title": "Product Endpoint Requests",
+      "type": "graph",
+      "gridPos": { "x": 0, "y": 4, "w": 12, "h": 6 },
+      "targets": [
+        {
+          "expr": "rate(products_requests_total[1m])",
+          "legendFormat": "GET /products"
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "title": "Order Endpoint Requests",
+      "type": "graph",
+      "gridPos": { "x": 12, "y": 4, "w": 12, "h": 6 },
+      "targets": [
+        {
+          "expr": "rate(orders_requests_total[1m])",
+          "legendFormat": "POST /order"
+        }
+      ]
+    },
+    {
+      "id": 4,
+      "title": "API Latency (p95)",
+      "type": "graph",
+      "gridPos": { "x": 0, "y": 10, "w": 24, "h": 6 },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.95, rate(products_request_duration_seconds_bucket[5m]))",
+          "legendFormat": "/products p95"
+        },
+        {
+          "expr": "histogram_quantile(0.95, rate(orders_request_duration_seconds_bucket[5m]))",
+          "legendFormat": "/order p95"
+        },
+        {
+          "expr": "histogram_quantile(0.95, rate(track_request_duration_seconds_bucket[5m]))",
+          "legendFormat": "/track p95"
+        }
+      ]
+    }
+  ]
+}
