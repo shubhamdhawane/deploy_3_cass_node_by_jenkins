@@ -1,0 +1,46 @@
+pipeline {
+    agent any
+
+    environment {
+        SSH_KEY = credentials('aws-key')   // Jenkins Credential ID for your .pem key
+    }
+
+    stages {
+
+        stage('Copy Deployment Script to All Nodes') {
+            steps {
+                sh '''
+                for node in 172.31.19.105 172.31.27.103 172.31.24.83; do
+                    echo "Copying script to $node ..."
+                    scp -o StrictHostKeyChecking=no -i "$SSH_KEY" \
+                    /var/lib/jenkins/scripts/deploy_cassandra.sh \
+                    ec2-user@$node:/home/ec2-user/
+                done
+                '''
+            }
+        }
+
+        stage('Run Deployment Script on All Nodes') {
+            steps {
+                sh '''
+                for node in 172.31.19.105 172.31.27.103 172.31.24.83; do
+                    echo "Running script on $node ..."
+                    ssh -o StrictHostKeyChecking=no -i "$SSH_KEY" ec2-user@$node \
+                    "chmod +x /home/ec2-user/deploy_cassandra.sh && sudo bash /home/ec2-user/deploy_cassandra.sh"
+                done
+                '''
+            }
+        }
+
+        stage('Verify Cassandra Cluster Health') {
+            steps {
+                sh '''
+                echo "Checking cluster status on first node..."
+                ssh -o StrictHostKeyChecking=no -i "$SSH_KEY" ec2-user@172.31.19.105 \
+                "/opt/apache-cassandra-4.0.13/bin/nodetool status"
+                '''
+            }
+        }
+
+    }
+}
