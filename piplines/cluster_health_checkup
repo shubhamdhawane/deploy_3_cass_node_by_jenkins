@@ -1,0 +1,31 @@
+pipeline {
+    agent any
+
+    environment {
+        SSH_KEY = credentials('aws-key')
+        NODES = "172.31.19.105 172.31.27.103 172.31.24.83"
+    }
+
+    stages {
+
+        stage('Cluster Health') {
+            steps {
+                script {
+                    for (node in NODES.split(" ")) {
+
+                        sh """
+                        ssh -o StrictHostKeyChecking=no \
+                        -i "$SSH_KEY" ec2-user@${node} '
+                        echo "===== ${node} ====="
+                        sudo /opt/apache-cassandra-4.0.13/bin/nodetool status
+                        sudo /opt/apache-cassandra-4.0.13/bin/nodetool info
+                        df -h
+                        free -m
+                        '
+                        """
+                    }
+                }
+            }
+        }
+    }
+}
