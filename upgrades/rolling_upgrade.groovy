@@ -1,0 +1,1 @@
+pipeline { agent any stages { stage('Upgrade'){ steps { echo 'Rolling upgrade' }}}}

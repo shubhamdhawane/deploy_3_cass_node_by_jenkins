@@ -1,0 +1,1 @@
+pipeline { agent any stages { stage('TLS'){ steps { echo 'Deploy certificates' }}}}

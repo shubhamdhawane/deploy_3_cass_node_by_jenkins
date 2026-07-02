@@ -1,0 +1,1 @@
+pipeline { agent any stages { stage('Rolling Restart'){ steps { echo 'restart nodes one by one' }}}}
