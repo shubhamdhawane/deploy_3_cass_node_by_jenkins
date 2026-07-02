@@ -1,0 +1,33 @@
+pipeline {
+    agent any
+
+    parameters {
+        choice(
+            name: 'NODE',
+            choices: [
+                '172.31.19.105',
+                '172.31.27.103',
+                '172.31.24.83'
+            ]
+        )
+    }
+
+    environment {
+        SSH_KEY = credentials('aws-key')
+    }
+
+    stages {
+
+        stage('Repair Node') {
+
+            steps {
+
+                sh """
+                ssh -o StrictHostKeyChecking=no \
+                -i "$SSH_KEY" ec2-user@${params.NODE} \
+                "sudo /opt/apache-cassandra-4.0.13/bin/nodetool repair -pr"
+                """
+            }
+        }
+    }
+}
