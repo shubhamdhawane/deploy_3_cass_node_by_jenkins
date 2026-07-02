@@ -1,0 +1,1 @@
+pipeline { agent any stages { stage('Health'){ steps { echo 'nodetool status' }}}}

@@ -1,0 +1,1 @@
+pipeline { agent any stages { stage('Bootstrap'){ steps { echo 'Add node' }}}}

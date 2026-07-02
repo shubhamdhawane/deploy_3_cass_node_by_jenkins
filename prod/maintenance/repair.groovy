@@ -1,0 +1,1 @@
+pipeline { agent any stages { stage('Repair'){ steps { echo 'nodetool repair -pr' }}}}

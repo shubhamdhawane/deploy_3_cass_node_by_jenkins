@@ -1,0 +1,1 @@
+pipeline { agent any stages { stage('Restore'){ steps { echo 'Restore snapshot' }}}}

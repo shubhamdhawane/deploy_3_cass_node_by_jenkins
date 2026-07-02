@@ -1,0 +1,1 @@
+pipeline { agent any stages { stage('Cleanup'){ steps { echo 'nodetool cleanup' }}}}
